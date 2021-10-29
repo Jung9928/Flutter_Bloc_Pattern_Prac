@@ -1,4 +1,5 @@
 import 'package:bloc_pattern_prac/src/bloc_pattern/bloc/count_bloc.dart';
+import 'package:bloc_pattern_prac/src/bloc_pattern/components/clone_count_view.dart';
 import 'package:bloc_pattern_prac/src/bloc_pattern/components/count_view.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,12 @@ class BlocDisplayWidget extends StatefulWidget {
 }
 
 class _BlocDisplayWidgetState extends State<BlocDisplayWidget> {
-  final CountBloc countBloc = CountBloc();
+  @override
+  void initState() {
+    super.initState();
+    countBloc = CountBloc();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -25,12 +31,31 @@ class _BlocDisplayWidgetState extends State<BlocDisplayWidget> {
       appBar: AppBar(
         title: Text("bloc 패턴"),
       ),
-      body: CountView(countBloc: countBloc),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          countBloc.add();
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: CountView(),
+          ),
+          Expanded(child: CloneCountView()),
+        ],
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              countBloc.countEventBloc.countEventSink.add(CountEvent.ADD_EVENT);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.remove),
+            onPressed: () {
+              countBloc.countEventBloc.countEventSink
+                  .add(CountEvent.SUBTRACT_EVENT);
+            },
+          ),
+        ],
       ),
     );
   }
